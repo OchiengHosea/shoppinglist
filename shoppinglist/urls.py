@@ -25,5 +25,5 @@ urlpatterns = [
     path('auth/', include('rest_auth.urls')),
     path('auth/register/', views.UserCreateAPIView.as_view(), name='register'),
     path('admin/', admin.site.urls),
-    path('shopping_list/', include('main.urls'))
+    path('shoppinglist/', include('main.urls'))
 ]

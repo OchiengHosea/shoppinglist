@@ -13,6 +13,7 @@ class ShoppingList(models.Model):
 
 
 class ShoppingItem(models.Model):
+    item_id = models.AutoField(primary_key=True)
     list_ref = models.ForeignKey(ShoppingList, on_delete=models.DO_NOTHING)
     item_name = models.CharField(max_length=55)
     description = models.CharField(max_length=500)
@@ -21,5 +22,5 @@ class ShoppingItem(models.Model):
     quantity = models.IntegerField(null=True, default=1)
 
     def __str__(self):
-        return self.item_name + '\t of' + self.list_ref
+        return self.item_name + '\t of' + str(self.list_ref)
     
