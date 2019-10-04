@@ -55,12 +55,15 @@ class ShoppingListAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ShoppingListItemsInstanceAPIView(APIView):
+    warning_message_str = ''
     def get_object(self, pk):
         try:
             # pylint: disable=no-member
             return ShoppingList.objects.get(pk=pk)
         except ShoppingList.DoesNotExist:
             raise Http404
+
+    
     def getShoppingItems(self, list_ref):
         # pylint: disable=no-member
         return ShoppingItem.objects.filter(list_ref=list_ref)
@@ -71,6 +74,17 @@ class ShoppingListItemsInstanceAPIView(APIView):
         shoppingList.overall_budget = shoppingList.overall_budget - round(Decimal(value), 2)
         shoppingList.save()
         return shoppingList.overall_budget
+
+    def checkRefillLevel(self, id):
+        # pylint: disable=no-member
+        shoppingList = ShoppingList.objects.get(pk=id)
+        if shoppingList.overall_budget <= shoppingList.minimul_refill_level:
+            deficit = shoppingList.minimul_refill_level - shoppingList.overall_budget
+            shoppingList.warning_message = shoppingList.warning_message = \
+                "You are running low bellow your overall message refill with " +deficit + \
+                " to be able to shop all these items"
+        shoppingList.warning_message = ""
+        shoppingList.save()
 
     def editOveralBudjet(self, id):
         # pylint: disable=no-member
@@ -92,7 +106,9 @@ class ShoppingListItemsInstanceAPIView(APIView):
         serializer = ShoppingItemSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-        return Response({'saved': serializer.data, 'new overall budjet':self.editOveralBudjet(id)})
+            new_overall_bgt = self.editOveralBudjet(id)
+            self.checkRefillLevel(id)
+        return Response({'saved': serializer.data, 'new overall budjet':new_overall_bgt})
 
     def patch(self, request, id, format="None"):
         # pylint: disable=no-member
@@ -103,7 +119,8 @@ class ShoppingListItemsInstanceAPIView(APIView):
             serializer.save()
             if(serializer.data['bought']) == True:
                 self.reduceOverallBudget(id, serializer.data['price'])
-            return Response({'success':'Patch success', 'new overall budjet':self.editOveralBudjet(id)})
+                new_overall_budget = self.editOveralBudjet(id)
+            return Response({'success':'Patch success', 'new overall budjet':new_overall_budget})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ShoppingFilterListItemsView(generics.ListAPIView):

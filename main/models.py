@@ -5,8 +5,11 @@ class ShoppingList(models.Model):
     owner = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     list_name = models.CharField(max_length=55)
     overall_budget = models.DecimalField(max_digits=100, decimal_places=2)
+    minimum_refill_level = models.DecimalField(max_digits=100, decimal_places=2)
+    warning_message = models.CharField(max_length=500)
     description = models.CharField(max_length=500)
     created_on = models.DateTimeField(auto_now=True)
+    
 
     def __str__(self):
         return str(self.owner) + '\t' + self.list_name + '\t' + str(self.created_on)

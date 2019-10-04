@@ -19,7 +19,7 @@ class ShoppingListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = sl
-        fields = ('owner', 'list_name', 'overall_budget', 'description', 'created_on')
+        fields = ('owner', 'list_name', 'overall_budget', 'minimum_refill_level', 'warning_message', 'description', 'created_on')
 
     def create(self, validated_data):
         # pylint: disable=no-member
