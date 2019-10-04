@@ -113,7 +113,7 @@ class ShoppingListItemsInstanceAPIView(APIView):
     def patch(self, request, id, format="None"):
         # pylint: disable=no-member
         print(request.data)
-        shoppingItem = ShoppingItem.objects.get(pk=request.data['item_id'])
+        shoppingItem = ShoppingItem.objects.get(pk=request.data['shop_item_id'])
         serializer = ShoppingItemSerializer(shoppingItem, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()

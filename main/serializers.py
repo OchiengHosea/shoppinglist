@@ -34,7 +34,7 @@ class ShoppingListSerializer(serializers.ModelSerializer):
 class ShoppingItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = si
-        fields = ('item_id', 'list_ref', 'item_name', 'description', 'category', 'price', 'bought')
+        fields = ('shop_item_id', 'list_ref', 'item_name', 'description', 'category', 'price', 'bought')
 
     def create(self, validated_data):
         # pylint: disable=no-member
