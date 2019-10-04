@@ -16,7 +16,7 @@ class ShoppingList(models.Model):
 
 
 class ShoppingItem(models.Model):
-    item_id = models.AutoField(primary_key=True)
+    item_id = models.BigIntegerField(primary_key=True)
     list_ref = models.ForeignKey(ShoppingList, on_delete=models.DO_NOTHING)
     item_name = models.CharField(max_length=55)
     description = models.CharField(max_length=500)
